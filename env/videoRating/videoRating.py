@@ -69,6 +69,13 @@ class VideoAnalyzer(QWidget):
         self.result_label = QLabel(self)
         self.result_label.setStyleSheet('color: #FFF; font-size: 16pt; font-family: Arial;')
         self.result_label.setAlignment(Qt.AlignCenter)
+        #self.result_label.setText(self.display_recommendation)
+
+        self.recommendation_label = QLabel(self)
+        self.recommendation_label.setStyleSheet('color: #FFF; font-size: 14pt; font-family: Arial;')
+        self.recommendation_label.setAlignment(Qt.AlignCenter)
+
+
 
         self.logo_label = QLabel(self)
         self.logo_pixmap = QPixmap('/Users/elgrhy/developer/videoRating/env/videoRating/20230301_201613_0000-removebg-preview.png')
@@ -125,6 +132,18 @@ class VideoAnalyzer(QWidget):
         font.setFamily('Arial')
         font.setPointSize(14)
         self.setFont(font)
+
+    def display_recommendation(self, percentage):
+        if percentage < 50:
+            message = "Your video needs improvement in the following areas:\n\n"
+            message += "- Increase video resolution\n"
+            message += "- Increase video duration\n"
+            message += "- Increase video frame rate\n"
+        else:
+            message = "Your video is good, but there's still room for improvement:\n\n"
+            message += "- Increase video duration\n"
+            message += "- Improve video content\n"
+            message += "- Add background music\n"
 
     def select_video(self):
         # Show a file dialog to choose a video file
