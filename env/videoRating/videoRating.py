@@ -3,12 +3,13 @@ import sys
 import cv2
 import numpy as np
 from numpy.lib.recfunctions import structured_to_unstructured
+from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor, QFont, QPalette, QPixmap
-from PyQt5.QtWidgets import (QApplication, QFileDialog, QLabel, QPushButton,
-                             QWidget)
+from PyQt5.QtGui import QColor, QCursor, QFont, QPalette, QPixmap
+from PyQt5.QtWidgets import (QApplication, QFileDialog, QFormLayout,
+                             QGridLayout, QHBoxLayout, QLabel, QPushButton,
+                             QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
 from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import LabelEncoder
 
 
 # Define the features to extract from the video
@@ -43,42 +44,63 @@ model.fit(X, y)
 class VideoAnalyzer(QWidget):
     def __init__(self):
         super().__init__()
+
         self.video_path = None
+        self.analysis_in_progress = False
         self.initUI()
 
     def initUI(self):
         self.set_dark_mode_style()
 
-        self.program_name_label = QLabel("Video prediction pro", self)
-        self.program_name_label.setGeometry(10, 10, 300, 50)
-        font = QFont()
-        font.setPointSize(18)
-        font.setBold(True)
-        self.program_name_label.setFont(font)
-
         # Define the GUI elements
         self.video_label = QLabel(self)
         self.video_label.setText("No video selected")
-        self.video_label.setGeometry(10, 70, 300, 20)
-        self.video_label.setStyleSheet('color: white; font-size: 14pt; font-family: Arial;')
+        self.video_label.setStyleSheet('color: #FFF; font-size: 16pt; font-family: Arial;')
+        self.video_label.setAlignment(Qt.AlignCenter)
 
         self.select_button = QPushButton("Select video", self)
-        self.select_button.setGeometry(200, 150, 100, 30)
-        self.select_button.setStyleSheet('background-color: #4CAF50; color: white; font-size: 14pt; font-family: Arial; border: none; border-radius: 5px; padding: 5px;')
+        self.select_button.setStyleSheet("QPushButton { border: 2px solid #BC006C; color: #FFF; font-size: 14pt; font-family: 'shanti'; border-radius: 25px; padding: 15px 30px; } QPushButton:hover { background: #BC006C; }")
         self.select_button.clicked.connect(self.select_video)
 
         self.analyze_button = QPushButton("Analyze video", self)
-        self.analyze_button.setGeometry(420, 150, 100, 30)
-        self.analyze_button.setStyleSheet('background-color: #4CAF50; color: white; font-size: 14pt; font-family: Arial; border: none; border-radius: 5px; padding: 5px;')
+        self.analyze_button.setStyleSheet("QPushButton { border: 2px solid #BC006C; color: #FFF; font-size: 14pt; font-family: 'shanti'; border-radius: 25px; padding: 15px 30px; } QPushButton:hover { background: #BC006C; }")
         self.analyze_button.clicked.connect(self.analyze_video)
 
         self.result_label = QLabel(self)
-        self.result_label.setGeometry(10, 180, 400, 20)
-        self.result_label.setStyleSheet('color: white; font-size: 14pt; font-family: Arial;')
+        self.result_label.setStyleSheet('color: #FFF; font-size: 16pt; font-family: Arial;')
+        self.result_label.setAlignment(Qt.AlignCenter)
 
+        self.logo_label = QLabel(self)
+        self.logo_pixmap = QPixmap('/Users/elgrhy/developer/videoRating/env/videoRating/20230301_201613_0000-removebg-preview.png')
+        self.logo_label.setPixmap(self.logo_pixmap.scaled(200, 100, Qt.KeepAspectRatio))
+        self.logo_label.setAlignment(Qt.AlignCenter)
+
+        self.note_label = QLabel(self)
+        self.note_label.setText("Note: This program uses a machine learning model to predict the likelihood of a video being popular.")
+        self.note_label.setStyleSheet('color: #FFF; font-size: 14pt; font-family: Arial;')
+        self.note_label.setAlignment(Qt.AlignCenter)
+
+        # Define the window layout
+        self.main_layout = QVBoxLayout(self)
+        self.main_layout.addWidget(self.logo_label)
+        self.form_layout = QFormLayout()
+        self.form_layout.addRow(self.video_label)
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.select_button)
+        button_layout.addWidget(self.analyze_button)
+        self.form_layout.addRow(button_layout)
+        spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.form_layout.addItem(spacer)
+        self.form_layout.addRow(self.result_label)
+        self.form_layout.setVerticalSpacing(30)
+        self.form_layout.setContentsMargins(50, 50, 50, 50)
+        self.main_layout.addLayout(self.form_layout)
+        self.main_layout.addWidget(self.note_label)
+        
         # Define the window properties
-        self.setGeometry(100, 100, 800, 400)
+        self.setGeometry(100, 100, 800, 500)
         self.setWindowTitle("Video prediction pro")
+        self.set_dark_mode_style()
         self.show()
 
     def set_dark_mode_style(self):
@@ -114,8 +136,8 @@ class VideoAnalyzer(QWidget):
     def analyze_video(self):
         if self.video_path is None:
             self.result_label.setText("Please select a video file")
-            self.result_label.setGeometry(10, 180, 400, 20)
-            self.result_label.setStyleSheet("color: red")
+            self.result_label.setGeometry(10, 220, 800, 50)
+            self.result_label.setStyleSheet('color: red; font-size: 16pt; font-family: Arial; padding: 75px')
             return
         # Extract features from the selected video
         features = extract_features(self.video_path)
@@ -123,8 +145,8 @@ class VideoAnalyzer(QWidget):
         prediction = model.predict([features.astype(float)])[0]
         # Display the prediction to the user
         self.result_label.setText("Prediction: {:.2f}% likelihood of being popular".format(prediction * 100))
-        self.result_label.setGeometry(10, 180, 400, 20)
-        self.result_label.setStyleSheet("color: white") 
+        self.result_label.setGeometry(10, 220, 800, 50)
+        self.result_label.setStyleSheet('color: white; font-size: 16pt; font-family: Arial; padding: 75px') 
         return
 
 if __name__ == '__main__':
