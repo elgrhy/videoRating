@@ -83,7 +83,7 @@ class VideoAnalyzer(QWidget):
         self.logo_label.setAlignment(Qt.AlignCenter)
 
         self.note_label = QLabel(self)
-        self.note_label.setText("Note: This program uses a machine learning model to predict the likelihood of a video being popular.")
+        self.note_label.setText("This program uses a machine learning model to predict the likelihood of a video being popular. Developed by Ahmed Elgarhy.")
         self.note_label.setStyleSheet('color: #FFF; font-size: 14pt; font-family: Arial;')
         self.note_label.setAlignment(Qt.AlignCenter)
 
