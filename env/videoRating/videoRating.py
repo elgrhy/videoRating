@@ -59,11 +59,11 @@ class VideoAnalyzer(QWidget):
         self.video_label.setAlignment(Qt.AlignCenter)
 
         self.select_button = QPushButton("Select video", self)
-        self.select_button.setStyleSheet("QPushButton { border: 2px solid #BC006C; color: #FFF; font-size: 14pt; font-family: 'shanti'; border-radius: 25px; padding: 15px 30px; } QPushButton:hover { background: #BC006C; }")
+        self.select_button.setStyleSheet("QPushButton { border: 2px solid #BC006C; color: #FFF; font-size: 14pt; font-family: 'Arial'; border-radius: 25px; padding: 15px 30px; } QPushButton:hover { background: #BC006C; }")
         self.select_button.clicked.connect(self.select_video)
 
         self.analyze_button = QPushButton("Analyze video", self)
-        self.analyze_button.setStyleSheet("QPushButton { border: 2px solid #BC006C; color: #FFF; font-size: 14pt; font-family: 'shanti'; border-radius: 25px; padding: 15px 30px; } QPushButton:hover { background: #BC006C; }")
+        self.analyze_button.setStyleSheet("QPushButton { border: 2px solid #BC006C; color: #FFF; font-size: 14pt; font-family: 'Arial'; border-radius: 25px; padding: 15px 30px; } QPushButton:hover { background: #BC006C; }")
         self.analyze_button.clicked.connect(self.analyze_video)
 
         self.result_label = QLabel(self)
